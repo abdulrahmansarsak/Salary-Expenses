@@ -78,8 +78,14 @@
       color: var(--text-muted);
     }
 
-    /* زر الوضع الداكن */
-    .theme-toggle {
+    .top-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .theme-toggle, .lang-select {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -90,6 +96,15 @@
       font-size: 12px;
       cursor: pointer;
       color: var(--text-main);
+    }
+
+    .lang-select select {
+      border: none;
+      background: transparent;
+      font-size: 12px;
+      color: var(--text-main);
+      outline: none;
+      direction: ltr;
     }
 
     .section-title {
@@ -160,14 +175,9 @@
       background: var(--accent-green);
       box-shadow: 0 6px 14px rgba(22,163,74,0.35);
     }
-
     @media (min-width: 640px) {
-      .actions {
-        justify-content: flex-start;
-      }
-      .btn {
-        flex: 0 0 auto;
-      }
+      .actions { justify-content: flex-start; }
+      .btn { flex: 0 0 auto; }
     }
 
     .results {
@@ -208,7 +218,6 @@
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 14px;
     }
-
     canvas {
       width: 100% !important;
       height: 260px !important;
@@ -234,99 +243,108 @@
   <div class="container">
     <div class="header-row">
       <div>
-        <h1>حاسبة الراتب والادخار</h1>
-        <p class="description">
+        <h1 data-i18n="title">حاسبة الراتب والادخار</h1>
+        <p class="description" data-i18n="description">
           أدخل راتبك الشهري وتفاصيل مصاريفك، واختر الوضع الداكن أو الفاتح، ثم احسب وصدّر جدولك كملف Excel.
         </p>
       </div>
-      <button class="theme-toggle" id="themeToggle">
-        <span id="themeLabel">الوضع الداكن</span>
-      </button>
+      <div class="top-controls">
+        <div class="lang-select">
+          <span data-i18n="langLabel">اللغة:</span>
+          <select id="langSelect">
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <button class="theme-toggle" id="themeToggle">
+          <span id="themeLabel">الوضع الداكن</span>
+        </button>
+      </div>
     </div>
 
     <!-- الراتب -->
-    <div class="section-title">الراتب</div>
+    <div class="section-title" data-i18n="salarySection">الراتب</div>
     <div class="grid">
       <div>
-        <label for="salary">الراتب الشهري (ريال)</label>
+        <label for="salary" data-i18n="salaryLabel">الراتب الشهري (ريال)</label>
         <input type="number" id="salary" inputmode="decimal" />
       </div>
     </div>
 
     <!-- المصاريف الثابتة -->
-    <div class="section-title">المصاريف الثابتة</div>
-    <div class="section-sub">مبالغ شبه ثابتة شهريًا لا يمكن الاستغناء عنها بسهولة.</div>
+    <div class="section-title" data-i18n="fixedSection">المصاريف الثابتة</div>
+    <div class="section-sub" data-i18n="fixedSub">مبالغ شبه ثابتة شهريًا لا يمكن الاستغناء عنها بسهولة.</div>
     <div class="grid">
       <div>
-        <label for="rent">إيجار البيت</label>
+        <label for="rent" data-i18n="rentLabel">إيجار البيت</label>
         <input type="number" id="rent" inputmode="decimal" />
       </div>
       <div>
-        <label for="fixedOther">مصاريف ثابتة أخرى</label>
+        <label for="fixedOther" data-i18n="fixedOtherLabel">مصاريف ثابتة أخرى</label>
         <input type="number" id="fixedOther" inputmode="decimal" />
       </div>
     </div>
 
     <!-- الفواتير -->
-    <div class="section-title">الفواتير الشهرية</div>
-    <div class="section-sub">فواتير الخدمات الأساسية.</div>
+    <div class="section-title" data-i18n="billsSection">الفواتير الشهرية</div>
+    <div class="section-sub" data-i18n="billsSub">فواتير الخدمات الأساسية.</div>
     <div class="grid">
-      <div><label for="electricity">كهرباء</label><input type="number" id="electricity" inputmode="decimal" /></div>
-      <div><label for="water">ماء</label><input type="number" id="water" inputmode="decimal" /></div>
-      <div><label for="mobile">جوال</label><input type="number" id="mobile" inputmode="decimal" /></div>
-      <div><label for="internet">إنترنت</label><input type="number" id="internet" inputmode="decimal" /></div>
-      <div><label for="billsOther">فواتير أخرى</label><input type="number" id="billsOther" inputmode="decimal" /></div>
+      <div><label for="electricity" data-i18n="electricityLabel">كهرباء</label><input type="number" id="electricity" inputmode="decimal" /></div>
+      <div><label for="water" data-i18n="waterLabel">ماء</label><input type="number" id="water" inputmode="decimal" /></div>
+      <div><label for="mobile" data-i18n="mobileLabel">جوال</label><input type="number" id="mobile" inputmode="decimal" /></div>
+      <div><label for="internet" data-i18n="internetLabel">إنترنت</label><input type="number" id="internet" inputmode="decimal" /></div>
+      <div><label for="billsOther" data-i18n="billsOtherLabel">فواتير أخرى</label><input type="number" id="billsOther" inputmode="decimal" /></div>
     </div>
 
     <!-- الأقساط والديون -->
-    <div class="section-title">الأقساط والديون</div>
-    <div class="section-sub">قروض، تمويل سيارات، بطاقات ائتمانية…</div>
+    <div class="section-title" data-i18n="debtSection">الأقساط والديون</div>
+    <div class="section-sub" data-i18n="debtSub">قروض، تمويل سيارات، بطاقات ائتمانية…</div>
     <div class="grid">
-      <div><label for="installments">الأقساط الشهرية</label><input type="number" id="installments" inputmode="decimal" /></div>
-      <div><label for="creditCard">البطاقة الائتمانية</label><input type="number" id="creditCard" inputmode="decimal" /></div>
+      <div><label for="installments" data-i18n="installmentsLabel">الأقساط الشهرية</label><input type="number" id="installments" inputmode="decimal" /></div>
+      <div><label for="creditCard" data-i18n="creditCardLabel">البطاقة الائتمانية</label><input type="number" id="creditCard" inputmode="decimal" /></div>
     </div>
 
     <!-- المصاريف اللازمة المتغيرة -->
-    <div class="section-title">المصاريف اللازمة المتغيرة</div>
-    <div class="section-sub">ضرورية ولكن تتغير من شهر لآخر.</div>
+    <div class="section-title" data-i18n="necessarySection">المصاريف اللازمة المتغيرة</div>
+    <div class="section-sub" data-i18n="necessarySub">ضرورية ولكن تتغير من شهر لآخر.</div>
     <div class="grid">
-      <div><label for="food">طعام</label><input type="number" id="food" inputmode="decimal" /></div>
-      <div><label for="kids">مصاريف الأبناء (مدارس، مواصلات…)</label><input type="number" id="kids" inputmode="decimal" /></div>
-      <div><label for="necessaryOther">مصاريف لازمة أخرى</label><input type="number" id="necessaryOther" inputmode="decimal" /></div>
+      <div><label for="food" data-i18n="foodLabel">طعام</label><input type="number" id="food" inputmode="decimal" /></div>
+      <div><label for="kids" data-i18n="kidsLabel">مصاريف الأبناء (مدارس، مواصلات…)</label><input type="number" id="kids" inputmode="decimal" /></div>
+      <div><label for="necessaryOther" data-i18n="necessaryOtherLabel">مصاريف لازمة أخرى</label><input type="number" id="necessaryOther" inputmode="decimal" /></div>
     </div>
 
     <!-- الكماليات -->
-    <div class="section-title">المشتريات / الكماليات</div>
-    <div class="section-sub">مصاريف يمكن التحكم فيها وتقليلها عند الحاجة.</div>
+    <div class="section-title" data-i18n="luxurySection">المشتريات / الكماليات</div>
+    <div class="section-sub" data-i18n="luxurySub">مصاريف يمكن التحكم فيها وتقليلها عند الحاجة.</div>
     <div class="grid">
-      <div><label for="restaurants">مطاعم</label><input type="number" id="restaurants" inputmode="decimal" /></div>
-      <div><label for="subscriptions">اشتراكات</label><input type="number" id="subscriptions" inputmode="decimal" /></div>
-      <div><label for="nonEssentialShopping">تسوق غير ضروري</label><input type="number" id="nonEssentialShopping" inputmode="decimal" /></div>
-      <div><label for="groceries">مقاضي البيت</label><input type="number" id="groceries" inputmode="decimal" /></div>
-      <div><label for="fuel">بنزين</label><input type="number" id="fuel" inputmode="decimal" /></div>
-      <div><label for="luxuryOther">كماليات أخرى</label><input type="number" id="luxuryOther" inputmode="decimal" /></div>
+      <div><label for="restaurants" data-i18n="restaurantsLabel">مطاعم</label><input type="number" id="restaurants" inputmode="decimal" /></div>
+      <div><label for="subscriptions" data-i18n="subscriptionsLabel">اشتراكات</label><input type="number" id="subscriptions" inputmode="decimal" /></div>
+      <div><label for="nonEssentialShopping" data-i18n="nonEssentialLabel">تسوق غير ضروري</label><input type="number" id="nonEssentialShopping" inputmode="decimal" /></div>
+      <div><label for="groceries" data-i18n="groceriesLabel">مقاضي البيت</label><input type="number" id="groceries" inputmode="decimal" /></div>
+      <div><label for="fuel" data-i18n="fuelLabel">بنزين</label><input type="number" id="fuel" inputmode="decimal" /></div>
+      <div><label for="luxuryOther" data-i18n="luxuryOtherLabel">كماليات أخرى</label><input type="number" id="luxuryOther" inputmode="decimal" /></div>
     </div>
 
     <!-- الأزرار -->
     <div class="actions">
-      <button class="btn btn-primary" id="calcBtn">احسب الآن</button>
-      <button class="btn btn-secondary" id="exportBtn">تصدير إلى Excel</button>
+      <button class="btn btn-primary" id="calcBtn" data-i18n="calcBtn">احسب الآن</button>
+      <button class="btn btn-secondary" id="exportBtn" data-i18n="exportBtn">تصدير إلى Excel</button>
     </div>
 
     <!-- النتائج -->
     <div class="results">
       <div class="card">
-        <h3>إجمالي المصاريف</h3>
+        <h3 data-i18n="totalExpensesTitle">إجمالي المصاريف</h3>
         <div id="totalExpenses" class="value">—</div>
         <div id="expenseText" class="muted"></div>
       </div>
       <div class="card">
-        <h3>المتبقي من الراتب</h3>
+        <h3 data-i18n="remainingTitle">المتبقي من الراتب</h3>
         <div id="remaining" class="value">—</div>
         <div id="remainingText" class="muted"></div>
       </div>
       <div class="card">
-        <h3>الادخار المقترح</h3>
+        <h3 data-i18n="savingTitle">الادخار المقترح</h3>
         <div id="saving" class="value">—</div>
         <div id="savingText" class="muted"></div>
       </div>
@@ -334,113 +352,221 @@
 
     <!-- الرسوم البيانية -->
     <div class="charts-section">
-      <h2>الرسوم البيانية</h2>
+      <h2 data-i18n="chartsTitle">الرسوم البيانية</h2>
       <div class="charts-grid">
         <div class="card"><canvas id="chartPie"></canvas></div>
         <div class="card"><canvas id="chartBar"></canvas></div>
       </div>
     </div>
 
-    <div class="footer">هذه الأداة للتوعية المالية فقط ولا تُعتبر استشارة مالية رسمية.</div>
+    <div class="footer" data-i18n="disclaimer">
+      هذه الأداة للتوعية المالية فقط ولا تُعتبر استشارة مالية رسمية.
+    </div>
     <div class="signature">إعداد عبد الرحمن سرسك</div>
   </div>
 </div>
 
 <script>
-  // --------- تخزين واسترجاع البيانات ----------
-  const inputIds = [
+  // --------- الترجمة ----------
+  var translations = {
+    ar: {
+      title: "حاسبة الراتب والادخار",
+      description: "أدخل راتبك الشهري وتفاصيل مصاريفك، واختر الوضع الداكن أو الفاتح، ثم احسب وصدّر جدولك كملف Excel.",
+      langLabel: "اللغة:",
+      salarySection: "الراتب",
+      salaryLabel: "الراتب الشهري (ريال)",
+      fixedSection: "المصاريف الثابتة",
+      fixedSub: "مبالغ شبه ثابتة شهريًا لا يمكن الاستغناء عنها بسهولة.",
+      rentLabel: "إيجار البيت",
+      fixedOtherLabel: "مصاريف ثابتة أخرى",
+      billsSection: "الفواتير الشهرية",
+      billsSub: "فواتير الخدمات الأساسية.",
+      electricityLabel: "كهرباء",
+      waterLabel: "ماء",
+      mobileLabel: "جوال",
+      internetLabel: "إنترنت",
+      billsOtherLabel: "فواتير أخرى",
+      debtSection: "الأقساط والديون",
+      debtSub: "قروض، تمويل سيارات، بطاقات ائتمانية…",
+      installmentsLabel: "الأقساط الشهرية",
+      creditCardLabel: "البطاقة الائتمانية",
+      necessarySection: "المصاريف اللازمة المتغيرة",
+      necessarySub: "ضرورية ولكن تتغير من شهر لآخر.",
+      foodLabel: "طعام",
+      kidsLabel: "مصاريف الأبناء (مدارس، مواصلات…)",
+      necessaryOtherLabel: "مصاريف لازمة أخرى",
+      luxurySection: "المشتريات / الكماليات",
+      luxurySub: "مصاريف يمكن التحكم فيها وتقليلها عند الحاجة.",
+      restaurantsLabel: "مطاعم",
+      subscriptionsLabel: "اشتراكات",
+      nonEssentialLabel: "تسوق غير ضروري",
+      groceriesLabel: "مقاضي البيت",
+      fuelLabel: "بنزين",
+      luxuryOtherLabel: "كماليات أخرى",
+      calcBtn: "احسب الآن",
+      exportBtn: "تصدير إلى Excel",
+      totalExpensesTitle: "إجمالي المصاريف",
+      remainingTitle: "المتبقي من الراتب",
+      savingTitle: "الادخار المقترح",
+      chartsTitle: "الرسوم البيانية",
+      disclaimer: "هذه الأداة للتوعية المالية فقط ولا تُعتبر استشارة مالية رسمية.",
+      themeDark: "الوضع الداكن",
+      themeLight: "الوضع الفاتح",
+      salaryWord: "الراتب",
+      expensesWord: "المصاريف",
+      remainingWord: "المتبقي",
+      savingWord: "الادخار",
+      catFixed: "ثابتة",
+      catBills: "فواتير",
+      catDebt: "ديون",
+      catNecessary: "لازمة",
+      catLuxury: "كماليات",
+      excelFile: "ميزانية-عبدالرحمن.xlsx",
+      excelSheet: "الميزانية"
+    },
+    en: {
+      title: "Salary & Savings Calculator",
+      description: "Enter your monthly salary and expenses, choose dark or light mode, then calculate and export your budget to Excel.",
+      langLabel: "Language:",
+      salarySection: "Salary",
+      salaryLabel: "Monthly salary (SAR)",
+      fixedSection: "Fixed expenses",
+      fixedSub: "Recurring monthly amounts you can’t easily cancel.",
+      rentLabel: "House rent",
+      fixedOtherLabel: "Other fixed expenses",
+      billsSection: "Monthly bills",
+      billsSub: "Utility and service bills.",
+      electricityLabel: "Electricity",
+      waterLabel: "Water",
+      mobileLabel: "Mobile",
+      internetLabel: "Internet",
+      billsOtherLabel: "Other bills",
+      debtSection: "Loans & debts",
+      debtSub: "Loans, car finance, credit cards…",
+      installmentsLabel: "Installments",
+      creditCardLabel: "Credit card",
+      necessarySection: "Necessary variable expenses",
+      necessarySub: "Essential but changing month to month.",
+      foodLabel: "Food",
+      kidsLabel: "Kids & school",
+      necessaryOtherLabel: "Other necessary",
+      luxurySection: "Shopping & lifestyle",
+      luxurySub: "Expenses you can reduce if needed.",
+      restaurantsLabel: "Restaurants",
+      subscriptionsLabel: "Subscriptions",
+      nonEssentialLabel: "Non-essential shopping",
+      groceriesLabel: "Groceries",
+      fuelLabel: "Fuel",
+      luxuryOtherLabel: "Other lifestyle",
+      calcBtn: "Calculate",
+      exportBtn: "Export to Excel",
+      totalExpensesTitle: "Total expenses",
+      remainingTitle: "Remaining salary",
+      savingTitle: "Suggested saving",
+      chartsTitle: "Charts",
+      disclaimer: "This tool is for financial awareness only and is not a formal financial advice.",
+      themeDark: "Dark mode",
+      themeLight: "Light mode",
+      salaryWord: "Salary",
+      expensesWord: "Expenses",
+      remainingWord: "Remaining",
+      savingWord: "Saving",
+      catFixed: "Fixed",
+      catBills: "Bills",
+      catDebt: "Debt",
+      catNecessary: "Necessary",
+      catLuxury: "Lifestyle",
+      excelFile: "Budget-Abdulrahman.xlsx",
+      excelSheet: "Budget"
+    }
+  };
+
+  var currentLang = "ar";
+  var currentTheme = "light";
+  var pieChart = null;
+  var barChart = null;
+  var lastValues = null;
+
+  var inputIds = [
     "salary","rent","fixedOther","electricity","water","mobile","internet","billsOther",
     "installments","creditCard","food","kids","necessaryOther",
     "restaurants","subscriptions","nonEssentialShopping","groceries","fuel","luxuryOther"
   ];
 
+  function getNumber(id) {
+    var el = document.getElementById(id);
+    var val = el.value;
+    if (val === "" || isNaN(val)) return 0;
+    return parseFloat(val);
+  }
+
   function saveData() {
-    inputIds.forEach(id => {
-      const el = document.getElementById(id);
+    for (var i = 0; i < inputIds.length; i++) {
+      var id = inputIds[i];
+      var el = document.getElementById(id);
       if (el) localStorage.setItem("budget_" + id, el.value);
-    });
+    }
   }
 
   function loadData() {
-    inputIds.forEach(id => {
-      const el = document.getElementById(id);
-      const v = localStorage.getItem("budget_" + id);
+    for (var i = 0; i < inputIds.length; i++) {
+      var id = inputIds[i];
+      var el = document.getElementById(id);
+      var v = localStorage.getItem("budget_" + id);
       if (el && v !== null) el.value = v;
-    });
-  }
-
-  // حفظ تلقائي عند التغيير (مفيد للجوال)
-  inputIds.forEach(id => {
-    const el = document.getElementById(id);
-    el && el.addEventListener("input", saveData);
-  });
-
-  loadData();
-
-  // --------- الوضع الداكن / الفاتح ----------
-  const themeToggle = document.getElementById("themeToggle");
-  const themeLabel  = document.getElementById("themeLabel");
-
-  function applyTheme(theme) {
-    if (theme === "dark") {
-      document.body.classList.add("dark");
-      themeLabel.textContent = "الوضع الفاتح";
-    } else {
-      document.body.classList.remove("dark");
-      themeLabel.textContent = "الوضع الداكن";
     }
-    localStorage.setItem("budget_theme", theme);
-    updateChartsTheme();
-  }
-
-  const savedTheme = localStorage.getItem("budget_theme") || "light";
-  applyTheme(savedTheme);
-
-  themeToggle.addEventListener("click", () => {
-    const isDark = document.body.classList.contains("dark");
-    applyTheme(isDark ? "light" : "dark");
-  });
-
-  // --------- الحساب والرسوم ----------
-  let pieChart = null;
-  let barChart = null;
-
-  function calcValues() {
-    const g = id => Number(document.getElementById(id).value || 0);
-
-    const salary = g("salary");
-
-    const fixed = g("rent") + g("fixedOther");
-    const bills = g("electricity") + g("water") + g("mobile") + g("internet") + g("billsOther");
-    const debt  = g("installments") + g("creditCard");
-    const necessary = g("food") + g("kids") + g("necessaryOther");
-    const luxury    = g("restaurants") + g("subscriptions") + g("nonEssentialShopping") +
-                      g("groceries") + g("fuel") + g("luxuryOther");
-
-    const total = fixed + bills + debt + necessary + luxury;
-    const remaining = salary - total;
-    const saving = Math.max(0, remaining * 0.2);
-
-    return { salary,fixed,bills,debt,necessary,luxury,total,remaining,saving };
   }
 
   function formatMoney(num) {
-    return num.toLocaleString("ar-SA", { maximumFractionDigits: 0 }) + " ريال";
+    return num.toLocaleString(currentLang === "ar" ? "ar-SA" : "en-US", {
+      maximumFractionDigits: 0
+    }) + (currentLang === "ar" ? " ريال" : " SAR");
+  }
+
+  function calcValues() {
+    var salary = getNumber("salary");
+
+    var fixed = getNumber("rent") + getNumber("fixedOther");
+    var bills = getNumber("electricity") + getNumber("water") + getNumber("mobile") +
+                getNumber("internet") + getNumber("billsOther");
+    var debt  = getNumber("installments") + getNumber("creditCard");
+    var necessary = getNumber("food") + getNumber("kids") + getNumber("necessaryOther");
+    var luxury    = getNumber("restaurants") + getNumber("subscriptions") +
+                    getNumber("nonEssentialShopping") + getNumber("groceries") +
+                    getNumber("fuel") + getNumber("luxuryOther");
+
+    var total = fixed + bills + debt + necessary + luxury;
+    var remaining = salary - total;
+    var saving = remaining > 0 ? remaining * 0.2 : 0;
+
+    return {
+      salary: salary,
+      fixed: fixed,
+      bills: bills,
+      debt: debt,
+      necessary: necessary,
+      luxury: luxury,
+      total: total,
+      remaining: remaining,
+      saving: saving
+    };
   }
 
   function calculate() {
-    const v = calcValues();
+    var v = calcValues();
     if (v.salary <= 0) {
-      alert("الرجاء إدخال الراتب الشهري أولاً.");
+      alert(currentLang === "ar" ? "الرجاء إدخال الراتب الشهري أولاً." : "Please enter your monthly salary first.");
       return;
     }
 
-    const totalEl = document.getElementById("totalExpenses");
-    const remainingEl = document.getElementById("remaining");
-    const savingEl = document.getElementById("saving");
-    const expenseText = document.getElementById("expenseText");
-    const remainingText = document.getElementById("remainingText");
-    const savingText = document.getElementById("savingText");
+    lastValues = v;
+
+    var totalEl = document.getElementById("totalExpenses");
+    var remainingEl = document.getElementById("remaining");
+    var savingEl = document.getElementById("saving");
+    var expenseText = document.getElementById("expenseText");
+    var remainingText = document.getElementById("remainingText");
+    var savingText = document.getElementById("savingText");
 
     totalEl.className = "value";
     remainingEl.className = "value";
@@ -450,8 +576,12 @@
     remainingEl.textContent = formatMoney(v.remaining);
     savingEl.textContent = formatMoney(v.saving);
 
-    const ratio = v.salary ? (v.total / v.salary) : 0;
-    expenseText.textContent = "نسبة المصاريف من الراتب: " + (ratio * 100).toFixed(1) + "%";
+    var ratio = v.salary ? (v.total / v.salary) : 0;
+    if (currentLang === "ar") {
+      expenseText.textContent = "نسبة المصاريف من الراتب: " + (ratio * 100).toFixed(1) + "%";
+    } else {
+      expenseText.textContent = "Expenses as % of salary: " + (ratio * 100).toFixed(1) + "%";
+    }
 
     if (ratio <= 0.5) {
       totalEl.classList.add("good");
@@ -463,21 +593,31 @@
 
     if (v.remaining > 0) {
       remainingEl.classList.add("good");
-      remainingText.textContent = "لديك مبلغ متبقٍ يمكن توجيهه للادخار أو سداد الديون.";
+      remainingText.textContent = currentLang === "ar"
+        ? "لديك مبلغ متبقٍ يمكن توجيهه للادخار أو سداد الديون."
+        : "You have a remaining amount that can go to savings or debt repayment.";
     } else if (v.remaining === 0) {
       remainingEl.classList.add("warn");
-      remainingText.textContent = "لا يتبقى شيء من الراتب، أي زيادة في المصاريف ستسبب عجزًا.";
+      remainingText.textContent = currentLang === "ar"
+        ? "لا يتبقى شيء من الراتب، أي زيادة في المصاريف ستسبب عجزًا."
+        : "Nothing remains from your salary; any extra expense will create a deficit.";
     } else {
       remainingEl.classList.add("bad");
-      remainingText.textContent = "يوجد عجز شهري، تحتاج لتخفيض المصاريف أو زيادة الدخل.";
+      remainingText.textContent = currentLang === "ar"
+        ? "هناك عجز شهري، تحتاج لتخفيض المصاريف أو زيادة الدخل."
+        : "You have a monthly deficit; you need to cut expenses or increase income.";
     }
 
     if (v.saving > 0) {
       savingEl.classList.add("good");
-      savingText.textContent = "قاعدة مقترحة: ادخر ١٠٪ إلى ٢٠٪ من الراتب. هنا اقترحنا ٢٠٪ من المتبقي.";
+      savingText.textContent = currentLang === "ar"
+        ? "قاعدة مقترحة: ادخر ١٠٪ إلى ٢٠٪ من الراتب. هنا اقترحنا ٢٠٪ من المبلغ المتبقي."
+        : "Suggested rule: save 10%–20% of salary. Here we propose 20% of your remaining amount.";
     } else {
       savingEl.classList.add("bad");
-      savingText.textContent = "قلّل الكماليات والأقساط حتى يتوفر مبلغ يمكن ادخاره شهريًا.";
+      savingText.textContent = currentLang === "ar"
+        ? "قلّل الكماليات والأقساط حتى يتوفر مبلغ يمكن ادخاره شهريًا."
+        : "Reduce lifestyle spending and installments until you have something left to save.";
     }
 
     saveData();
@@ -485,25 +625,27 @@
   }
 
   function renderCharts(v) {
-    const isDark = document.body.classList.contains("dark");
-    const axisColor = isDark ? "#e5e7eb" : "#111827";
-    const gridColor = isDark ? "#1f2937" : "#e5e7eb";
-    const legendColor = axisColor;
-
-    const pieData = [v.fixed, v.bills, v.debt, v.necessary, v.luxury];
+    if (typeof Chart === "undefined") return;
 
     if (pieChart) pieChart.destroy();
     if (barChart) barChart.destroy();
 
-    const pieCtx = document.getElementById("chartPie").getContext("2d");
-    const barCtx = document.getElementById("chartBar").getContext("2d");
+    var isDark = document.body.classList.contains("dark");
+    var axisColor = isDark ? "#e5e7eb" : "#111827";
+    var gridColor = isDark ? "#1f2937" : "#e5e7eb";
+    var legendColor = axisColor;
 
+    var labelsPie = currentLang === "ar"
+      ? [translations.ar.catFixed, translations.ar.catBills, translations.ar.catDebt, translations.ar.catNecessary, translations.ar.catLuxury]
+      : [translations.en.catFixed, translations.en.catBills, translations.en.catDebt, translations.en.catNecessary, translations.en.catLuxury];
+
+    var pieCtx = document.getElementById("chartPie").getContext("2d");
     pieChart = new Chart(pieCtx, {
       type: "doughnut",
       data: {
-        labels: ["ثابتة","فواتير","ديون","لازمة","كماليات"],
+        labels: labelsPie,
         datasets: [{
-          data: pieData,
+          data: [v.fixed, v.bills, v.debt, v.necessary, v.luxury]
         }]
       },
       options: {
@@ -516,12 +658,18 @@
       }
     });
 
+    var labelsBar = currentLang === "ar"
+      ? [translations.ar.salaryWord, translations.ar.expensesWord, translations.ar.remainingWord, translations.ar.savingWord]
+      : [translations.en.salaryWord, translations.en.expensesWord, translations.en.remainingWord, translations.en.savingWord];
+
+    var barCtx = document.getElementById("chartBar").getContext("2d");
     barChart = new Chart(barCtx, {
       type: "bar",
       data: {
-        labels: ["الراتب","المصاريف","المتبقي","الادخار"],
+        labels: labelsBar,
         datasets: [{
           data: [v.salary, v.total, v.remaining, v.saving],
+          backgroundColor: "#2563eb"
         }]
       },
       options: {
@@ -541,47 +689,100 @@
     });
   }
 
-  function updateChartsTheme() {
-    if (!pieChart || !barChart) return;
-    const isDark = document.body.classList.contains("dark");
-    const axisColor = isDark ? "#e5e7eb" : "#111827";
-    const gridColor = isDark ? "#1f2937" : "#e5e7eb";
-    const legendColor = axisColor;
+  function applyLanguage(lang) {
+    currentLang = lang;
+    var dict = translations[lang];
 
-    pieChart.options.plugins.legend.labels.color = legendColor;
-    pieChart.update();
+    var elements = document.querySelectorAll("[data-i18n]");
+    for (var i = 0; i < elements.length; i++) {
+      var key = elements[i].getAttribute("data-i18n");
+      if (dict[key]) elements[i].textContent = dict[key];
+    }
 
-    barChart.options.scales.x.ticks.color = axisColor;
-    barChart.options.scales.y.ticks.color = axisColor;
-    barChart.options.scales.x.grid.color = gridColor;
-    barChart.options.scales.y.grid.color = gridColor;
-    barChart.update();
+    document.getElementById("langSelect").value = lang;
+
+    var label = document.getElementById("themeLabel");
+    if (currentTheme === "dark") label.textContent = dict.themeLight;
+    else label.textContent = dict.themeDark;
+
+    localStorage.setItem("budget_lang", lang);
+
+    if (lastValues) renderCharts(lastValues);
   }
 
-  document.getElementById("calcBtn").addEventListener("click", calculate);
+  function applyTheme(theme) {
+    currentTheme = theme;
+    if (theme === "dark") {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+    localStorage.setItem("budget_theme", theme);
 
-  // --------- تصدير إلى Excel ----------
+    var label = document.getElementById("themeLabel");
+    var dict = translations[currentLang];
+    if (theme === "dark") label.textContent = dict.themeLight;
+    else label.textContent = dict.themeDark;
+
+    if (lastValues) renderCharts(lastValues);
+  }
+
+  function toggleTheme() {
+    var newTheme = currentTheme === "dark" ? "light" : "dark";
+    applyTheme(newTheme);
+  }
+
   function exportExcel() {
-    const v = calcValues();
-    const data = [
-      ["البند", "القيمة"],
-      ["الراتب", v.salary],
-      ["المصاريف الثابتة", v.fixed],
-      ["الفواتير", v.bills],
-      ["الأقساط والبطاقة", v.debt],
-      ["المصاريف اللازمة", v.necessary],
-      ["الكماليات", v.luxury],
-      ["إجمالي المصاريف", v.total],
-      ["المتبقي من الراتب", v.remaining],
-      ["الادخار المقترح", v.saving]
+    if (typeof XLSX === "undefined") {
+      alert(currentLang === "ar"
+        ? "مكتبة التصدير غير محمّلة. تأكد من الاتصال بالإنترنت."
+        : "Export library not loaded. Please check your internet connection.");
+      return;
+    }
+
+    var v = calcValues();
+    var dict = translations[currentLang];
+
+    var data = [
+      [currentLang === "ar" ? "البند" : "Item", currentLang === "ar" ? "القيمة" : "Value"],
+      [dict.salaryWord, v.salary],
+      [dict.catFixed, v.fixed],
+      [dict.catBills, v.bills],
+      [dict.catDebt, v.debt],
+      [dict.catNecessary, v.necessary],
+      [dict.catLuxury, v.luxury],
+      [currentLang === "ar" ? "إجمالي المصاريف" : "Total expenses", v.total],
+      [currentLang === "ar" ? "المتبقي من الراتب" : "Remaining salary", v.remaining],
+      [currentLang === "ar" ? "الادخار المقترح" : "Suggested saving", v.saving]
     ];
-    const ws = XLSX.utils.aoa_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "الميزانية");
-    XLSX.writeFile(wb, "ميزانية-عبدالرحمن.xlsx");
+
+    var ws = XLSX.utils.aoa_to_sheet(data);
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, dict.excelSheet);
+    XLSX.writeFile(wb, dict.excelFile);
   }
 
-  document.getElementById("exportBtn").addEventListener("click", exportExcel);
+  document.addEventListener("DOMContentLoaded", function () {
+    loadData();
+
+    for (var i = 0; i < inputIds.length; i++) {
+      var el = document.getElementById(inputIds[i]);
+      if (el) el.addEventListener("input", saveData);
+    }
+
+    var savedLang = localStorage.getItem("budget_lang") || "ar";
+    applyLanguage(savedLang);
+
+    var savedTheme = localStorage.getItem("budget_theme") || "light";
+    applyTheme(savedTheme);
+
+    document.getElementById("calcBtn").addEventListener("click", calculate);
+    document.getElementById("exportBtn").addEventListener("click", exportExcel);
+    document.getElementById("themeToggle").addEventListener("click", toggleTheme);
+    document.getElementById("langSelect").addEventListener("change", function (e) {
+      applyLanguage(e.target.value);
+    });
+  });
 </script>
 </body>
 </html>
