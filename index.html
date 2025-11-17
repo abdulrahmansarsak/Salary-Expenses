@@ -4,400 +4,584 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>حاسبة الراتب والادخار</title>
+
+  <!-- مكتبات الرسم والتصدير -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
   <style>
+    :root {
+      --bg: #f3f4f6;
+      --container-bg: #ffffff;
+      --card-bg: #f9fafb;
+      --border: #e5e7eb;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --accent: #2563eb;
+      --accent-green: #059669;
+    }
+    body.dark {
+      --bg: #020617;
+      --container-bg: #020617;
+      --card-bg: #0b1120;
+      --border: #1f2937;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f3f4f6;
+      background: var(--bg);
+      color: var(--text-main);
       margin: 0;
       padding: 0;
     }
+    .page-wrap {
+      padding: 10px;
+    }
     .container {
-      max-width: 900px;
-      margin: 24px auto;
-      background: #ffffff;
+      max-width: 1100px;
+      margin: 14px auto;
+      background: var(--container-bg);
       border-radius: 16px;
-      padding: 24px 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      padding: 18px 14px 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     }
+    @media (min-width: 768px) {
+      .container {
+        padding: 24px 22px 30px;
+        margin-top: 24px;
+      }
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     h1 {
-      margin-top: 0;
-      text-align: center;
-      font-size: 26px;
-      color: #111827;
+      margin: 0;
+      font-size: 24px;
     }
-    p.description {
-      text-align: center;
-      color: #4b5563;
-      margin-bottom: 24px;
-      font-size: 14px;
+    @media (min-width: 768px) {
+      h1 { font-size: 28px; }
     }
+
+    .description {
+      margin: 6px 0 14px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* زر الوضع الداكن */
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--text-main);
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-top: 14px;
+    }
+    .section-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px 12px;
+      margin-top: 6px;
     }
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+
     label {
-      font-size: 14px;
-      color: #111827;
-      font-weight: 600;
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
     }
-    small {
-      font-size: 11px;
-      color: #6b7280;
-    }
+
     input[type="number"] {
-      padding: 10px 12px;
+      width: 100%;
+      padding: 10px 11px;
       border-radius: 10px;
-      border: 1px solid #d1d5db;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-main);
       font-size: 14px;
       outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
     }
     input[type="number"]:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.25);
+      background: #ffffff20;
     }
+
     .actions {
-      text-align: center;
-      margin: 12px 0 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
     }
-    button {
-      padding: 10px 24px;
+    .btn {
+      padding: 10px 18px;
       border-radius: 999px;
       border: none;
-      font-size: 15px;
-      font-weight: 600;
       cursor: pointer;
-      background: #2563eb;
-      color: white;
-      box-shadow: 0 10px 20px rgba(37,99,235,0.25);
-      transition: transform 0.1s, box-shadow 0.1s, background 0.15s;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      min-width: 140px;
     }
-    button:hover {
-      background: #1d4ed8;
-      transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(37,99,235,0.35);
+    .btn-primary {
+      background: var(--accent);
+      box-shadow: 0 6px 14px rgba(37,99,235,0.35);
     }
-    button:active {
-      transform: translateY(0);
-      box-shadow: 0 8px 18px rgba(37,99,235,0.25);
+    .btn-secondary {
+      background: var(--accent-green);
+      box-shadow: 0 6px 14px rgba(22,163,74,0.35);
+    }
+
+    @media (min-width: 640px) {
+      .actions {
+        justify-content: flex-start;
+      }
+      .btn {
+        flex: 0 0 auto;
+      }
     }
 
     .results {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-bottom: 20px;
+      gap: 14px;
+      margin-top: 18px;
     }
     .card {
+      background: var(--card-bg);
       border-radius: 14px;
-      padding: 14px 16px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--border);
+      padding: 12px 13px;
     }
-    .card h2 {
-      margin: 0 0 6px;
+    .card h3 {
+      margin: 0 0 4px;
       font-size: 14px;
-      color: #374151;
     }
     .value {
       font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 4px;
+      font-weight: 800;
+      margin-bottom: 2px;
     }
-    .value.good {
-      color: #16a34a;
+    .good { color: #16a34a; }
+    .warn { color: #eab308; }
+    .bad  { color: #dc2626; }
+    .muted { font-size: 12px; color: var(--text-muted); }
+
+    .charts-section {
+      margin-top: 22px;
     }
-    .value.warn {
-      color: #eab308;
+    .charts-section h2 {
+      font-size: 16px;
+      margin-bottom: 8px;
     }
-    .value.bad {
-      color: #dc2626;
-    }
-    .muted {
-      font-size: 12px;
-      color: #6b7280;
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
     }
 
-    .tips {
-      margin-top: 8px;
-    }
-    .tips h3 {
-      font-size: 15px;
-      margin: 0 0 6px;
-      color: #111827;
-    }
-    .tips ul {
-      margin: 0;
-      padding-left: 18px;
-      font-size: 13px;
-      color: #374151;
-    }
-    .tips li {
-      margin-bottom: 4px;
-    }
-    .status-chip {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 600;
-      margin-top: 4px;
-    }
-    .status-good {
-      background: #dcfce7;
-      color: #166534;
-    }
-    .status-warn {
-      background: #fef9c3;
-      color: #92400e;
-    }
-    .status-bad {
-      background: #fee2e2;
-      color: #991b1b;
+    canvas {
+      width: 100% !important;
+      height: 260px !important;
     }
 
     .footer {
-      margin-top: 14px;
       text-align: center;
-      font-size: 11px;
+      margin: 18px auto 4px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .signature {
+      text-align: center;
+      font-size: 13px;
       color: #9ca3af;
+      margin-top: 2px;
     }
   </style>
 </head>
+
 <body>
+<div class="page-wrap">
   <div class="container">
-    <h1>حاسبة الراتب والادخار</h1>
-    <p class="description">
-      أدخل راتبك الشهري ومجموع المصاريف لكل فئة، ثم اضغط على "احسب الآن" لمعرفة الباقي والتوصيات الأساسية للادخار.
-    </p>
+    <div class="header-row">
+      <div>
+        <h1>حاسبة الراتب والادخار</h1>
+        <p class="description">
+          أدخل راتبك الشهري وتفاصيل مصاريفك، واختر الوضع الداكن أو الفاتح، ثم احسب وصدّر جدولك كملف Excel.
+        </p>
+      </div>
+      <button class="theme-toggle" id="themeToggle">
+        <span id="themeLabel">الوضع الداكن</span>
+      </button>
+    </div>
 
+    <!-- الراتب -->
+    <div class="section-title">الراتب</div>
     <div class="grid">
-      <div class="field">
-        <label for="salary">إجمالي الراتب الشهري (ريال)</label>
-        <input type="number" id="salary" min="0" step="0.01" placeholder="مثال: 12000" />
-      </div>
-
-      <div class="field">
-        <label for="fixedExpenses">المصاريف الثابتة</label>
-        <small>إيجار، أقساط سيارة ثابتة، مواصلات ثابتة…</small>
-        <input type="number" id="fixedExpenses" min="0" step="0.01" placeholder="مثال: 4000" />
-      </div>
-
-      <div class="field">
-        <label for="necessaryExpenses">المصاريف اللازمة المتغيرة</label>
-        <small>طعام، حاجات المنزل، مصاريف الأبناء الأساسية…</small>
-        <input type="number" id="necessaryExpenses" min="0" step="0.01" placeholder="مثال: 2500" />
-      </div>
-
-      <div class="field">
-        <label for="installments">الأقساط الشهرية</label>
-        <small>قروض، بطاقات ائتمان، تقسيط أجهزة…</small>
-        <input type="number" id="installments" min="0" step="0.01" placeholder="مثال: 1500" />
-      </div>
-
-      <div class="field">
-        <label for="bills">الفواتير الشهرية</label>
-        <small>كهرباء، ماء، إنترنت، جوال…</small>
-        <input type="number" id="bills" min="0" step="0.01" placeholder="مثال: 600" />
-      </div>
-
-      <div class="field">
-        <label for="shopping">المشتريات / الكماليات</label>
-        <small>مطاعم، اشتراكات، تسوق غير ضروري…</small>
-        <input type="number" id="shopping" min="0" step="0.01" placeholder="مثال: 1200" />
+      <div>
+        <label for="salary">الراتب الشهري (ريال)</label>
+        <input type="number" id="salary" inputmode="decimal" />
       </div>
     </div>
 
+    <!-- المصاريف الثابتة -->
+    <div class="section-title">المصاريف الثابتة</div>
+    <div class="section-sub">مبالغ شبه ثابتة شهريًا لا يمكن الاستغناء عنها بسهولة.</div>
+    <div class="grid">
+      <div>
+        <label for="rent">إيجار البيت</label>
+        <input type="number" id="rent" inputmode="decimal" />
+      </div>
+      <div>
+        <label for="fixedOther">مصاريف ثابتة أخرى</label>
+        <input type="number" id="fixedOther" inputmode="decimal" />
+      </div>
+    </div>
+
+    <!-- الفواتير -->
+    <div class="section-title">الفواتير الشهرية</div>
+    <div class="section-sub">فواتير الخدمات الأساسية.</div>
+    <div class="grid">
+      <div><label for="electricity">كهرباء</label><input type="number" id="electricity" inputmode="decimal" /></div>
+      <div><label for="water">ماء</label><input type="number" id="water" inputmode="decimal" /></div>
+      <div><label for="mobile">جوال</label><input type="number" id="mobile" inputmode="decimal" /></div>
+      <div><label for="internet">إنترنت</label><input type="number" id="internet" inputmode="decimal" /></div>
+      <div><label for="billsOther">فواتير أخرى</label><input type="number" id="billsOther" inputmode="decimal" /></div>
+    </div>
+
+    <!-- الأقساط والديون -->
+    <div class="section-title">الأقساط والديون</div>
+    <div class="section-sub">قروض، تمويل سيارات، بطاقات ائتمانية…</div>
+    <div class="grid">
+      <div><label for="installments">الأقساط الشهرية</label><input type="number" id="installments" inputmode="decimal" /></div>
+      <div><label for="creditCard">البطاقة الائتمانية</label><input type="number" id="creditCard" inputmode="decimal" /></div>
+    </div>
+
+    <!-- المصاريف اللازمة المتغيرة -->
+    <div class="section-title">المصاريف اللازمة المتغيرة</div>
+    <div class="section-sub">ضرورية ولكن تتغير من شهر لآخر.</div>
+    <div class="grid">
+      <div><label for="food">طعام</label><input type="number" id="food" inputmode="decimal" /></div>
+      <div><label for="kids">مصاريف الأبناء (مدارس، مواصلات…)</label><input type="number" id="kids" inputmode="decimal" /></div>
+      <div><label for="necessaryOther">مصاريف لازمة أخرى</label><input type="number" id="necessaryOther" inputmode="decimal" /></div>
+    </div>
+
+    <!-- الكماليات -->
+    <div class="section-title">المشتريات / الكماليات</div>
+    <div class="section-sub">مصاريف يمكن التحكم فيها وتقليلها عند الحاجة.</div>
+    <div class="grid">
+      <div><label for="restaurants">مطاعم</label><input type="number" id="restaurants" inputmode="decimal" /></div>
+      <div><label for="subscriptions">اشتراكات</label><input type="number" id="subscriptions" inputmode="decimal" /></div>
+      <div><label for="nonEssentialShopping">تسوق غير ضروري</label><input type="number" id="nonEssentialShopping" inputmode="decimal" /></div>
+      <div><label for="groceries">مقاضي البيت</label><input type="number" id="groceries" inputmode="decimal" /></div>
+      <div><label for="fuel">بنزين</label><input type="number" id="fuel" inputmode="decimal" /></div>
+      <div><label for="luxuryOther">كماليات أخرى</label><input type="number" id="luxuryOther" inputmode="decimal" /></div>
+    </div>
+
+    <!-- الأزرار -->
     <div class="actions">
-      <button id="calculateBtn">احسب الآن</button>
+      <button class="btn btn-primary" id="calcBtn">احسب الآن</button>
+      <button class="btn btn-secondary" id="exportBtn">تصدير إلى Excel</button>
     </div>
 
+    <!-- النتائج -->
     <div class="results">
       <div class="card">
-        <h2>إجمالي المصاريف الشهرية</h2>
+        <h3>إجمالي المصاريف</h3>
         <div id="totalExpenses" class="value">—</div>
-        <div class="muted" id="expenseRatioText"></div>
+        <div id="expenseText" class="muted"></div>
       </div>
-
       <div class="card">
-        <h2>المبلغ المتبقي من الراتب</h2>
+        <h3>المتبقي من الراتب</h3>
         <div id="remaining" class="value">—</div>
-        <div class="muted" id="remainingText"></div>
+        <div id="remainingText" class="muted"></div>
       </div>
-
       <div class="card">
-        <h2>الادخار المقترح</h2>
-        <div id="savingSuggested" class="value">—</div>
-        <div class="muted" id="savingText"></div>
+        <h3>الادخار المقترح</h3>
+        <div id="saving" class="value">—</div>
+        <div id="savingText" class="muted"></div>
       </div>
     </div>
 
-    <div class="card tips">
-      <h3>توصيات أساسية لحفظ المال والادخار</h3>
-      <div id="statusChip"></div>
-      <ul id="tipsList">
-        <li>أدخل الأرقام واضغط "احسب الآن" لرؤية التوصيات المناسبة لوضعك المالي.</li>
-      </ul>
+    <!-- الرسوم البيانية -->
+    <div class="charts-section">
+      <h2>الرسوم البيانية</h2>
+      <div class="charts-grid">
+        <div class="card"><canvas id="chartPie"></canvas></div>
+        <div class="card"><canvas id="chartBar"></canvas></div>
+      </div>
     </div>
 
-    <div class="footer">
-      هذه الأداة للتوعية المالية فقط ولا تُعتبر استشارة مالية رسمية.
-    </div>
+    <div class="footer">هذه الأداة للتوعية المالية فقط ولا تُعتبر استشارة مالية رسمية.</div>
+    <div class="signature">إعداد عبد الرحمن سرسك</div>
   </div>
+</div>
 
-  <script>
-    function getNumber(id) {
-      const val = document.getElementById(id).value.trim();
-      return val === "" ? 0 : parseFloat(val);
-    }
+<script>
+  // --------- تخزين واسترجاع البيانات ----------
+  const inputIds = [
+    "salary","rent","fixedOther","electricity","water","mobile","internet","billsOther",
+    "installments","creditCard","food","kids","necessaryOther",
+    "restaurants","subscriptions","nonEssentialShopping","groceries","fuel","luxuryOther"
+  ];
 
-    function formatMoney(num) {
-      if (isNaN(num)) return "—";
-      return num.toLocaleString("ar-SA", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-      }) + " ريال";
-    }
-
-    document.getElementById("calculateBtn").addEventListener("click", function () {
-      const salary = getNumber("salary");
-
-      if (salary <= 0) {
-        alert("الرجاء إدخال الراتب الشهري بشكل صحيح (أكبر من صفر).");
-        return;
-      }
-
-      const fixedExpenses      = getNumber("fixedExpenses");
-      const necessaryExpenses  = getNumber("necessaryExpenses");
-      const installments       = getNumber("installments");
-      const bills              = getNumber("bills");
-      const shopping           = getNumber("shopping");
-
-      const totalExpenses = fixedExpenses + necessaryExpenses + installments + bills + shopping;
-      const remaining     = salary - totalExpenses;
-
-      const totalElem          = document.getElementById("totalExpenses");
-      const remainingElem      = document.getElementById("remaining");
-      const savingSuggestedElem= document.getElementById("savingSuggested");
-      const expenseRatioText   = document.getElementById("expenseRatioText");
-      const remainingText      = document.getElementById("remainingText");
-      const savingText         = document.getElementById("savingText");
-      const tipsList           = document.getElementById("tipsList");
-      const statusChip         = document.getElementById("statusChip");
-
-      // إعادة تعيين الألوان
-      totalElem.className = "value";
-      remainingElem.className = "value";
-      savingSuggestedElem.className = "value";
-
-      // حساب النسب
-      const expenseRatio = totalExpenses / salary; // نسبة المصاريف من الراتب
-      const recommendedSavingMin = salary * 0.10; // 10%
-      const recommendedSavingTarget = salary * 0.20; // 20%
-
-      // تعبئة القيم
-      totalElem.textContent = formatMoney(totalExpenses);
-      remainingElem.textContent = formatMoney(remaining);
-
-      expenseRatioText.textContent = "نسبة المصاريف من الراتب: " +
-        (expenseRatio * 100).toFixed(1) + "%";
-
-      let statusClass = "";
-      let statusText  = "";
-
-      // حالة المصاريف مقارنة بالراتب
-      if (expenseRatio <= 0.5) {
-        totalElem.classList.add("good");
-        statusClass = "status-good";
-        statusText  = "وضع ممتاز: مصاريفك أقل من ٥٠٪ من الراتب.";
-      } else if (expenseRatio <= 0.7) {
-        totalElem.classList.add("warn");
-        statusClass = "status-warn";
-        statusText  = "وضع متوسط: حاول تخفيض المصاريف لتكون أقل من ٦٠٪ من الراتب.";
-      } else {
-        totalElem.classList.add("bad");
-        statusClass = "status-bad";
-        statusText  = "تحذير: مصاريفك تقترب من الراتب أو تتجاوزه، تحتاج لإعادة ضبط قوية.";
-      }
-
-      // حالة المبلغ المتبقي
-      if (remaining > 0) {
-        remainingElem.classList.add("good");
-        remainingText.textContent = "لديك مبلغ متبقٍ يمكن توجيهه للادخار أو سداد الديون.";
-      } else if (remaining === 0) {
-        remainingElem.classList.add("warn");
-        remainingText.textContent = "لا يتبقى شيء من الراتب، أي زيادة في المصاريف ستدخلك في عجز.";
-      } else {
-        remainingElem.classList.add("bad");
-        remainingText.textContent = "يوجد عجز شهري، تحتاج لتخفيض المصاريف أو زيادة الدخل بأسرع وقت.";
-      }
-
-      // ادخار مقترح بناءً على الراتب
-      if (remaining <= 0) {
-        savingSuggestedElem.textContent = "غير متاح";
-        savingSuggestedElem.classList.add("bad");
-        savingText.textContent = "ابدأ أولًا بتقليل الكماليات والأقساط قدر الإمكان حتى يصبح لديك مبلغ متبقٍ للادخار.";
-      } else {
-        const savingPlan = Math.min(remaining, recommendedSavingTarget);
-        savingSuggestedElem.textContent = formatMoney(savingPlan);
-        savingSuggestedElem.classList.add("good");
-
-        savingText.textContent =
-          "قاعدة بسيطة: حاول ادخار ١٠٪ إلى ٢٠٪ من الراتب (بين " +
-          formatMoney(recommendedSavingMin) + " و " +
-          formatMoney(recommendedSavingTarget) + "). " +
-          "هنا اقترحنا ادخارًا لا يتجاوز المبلغ المتبقي لديك.";
-      }
-
-      // تحديث شريحة الحالة
-      statusChip.innerHTML = "";
-      const chip = document.createElement("div");
-      chip.className = "status-chip " + statusClass;
-      chip.textContent = statusText;
-      statusChip.appendChild(chip);
-
-      // بناء قائمة التوصيات حسب الحالة
-      tipsList.innerHTML = "";
-
-      // توصيات عامة دائمًا
-      const tips = [];
-
-      if (remaining < 0) {
-        tips.push("راجع بند المشتريات والكماليات أولًا، وحاول تخفيضه بنسبة ٣٠٪ على الأقل في الشهر القادم.");
-        tips.push("حاول التفاوض على الأقساط أو إعادة جدولتها لتقليل العبء الشهري.");
-      } else if (expenseRatio > 0.7) {
-        tips.push("قلّل من الالتزامات الثابتة قدر الإمكان (نقل السكن الأرخص، تقليل السيارات، إلغاء اشتراكات غير ضرورية).");
-      } else if (expenseRatio <= 0.5) {
-        tips.push("استمر على هذا النمط، وحاول زيادة نسبة الادخار تدريجيًا إلى ٢٠٪ من الراتب.");
-      } else {
-        tips.push("جرّب قاعدة 50/30/20: ٥٠٪ للحاجات الأساسية، ٣٠٪ للكماليات، ٢٠٪ للادخار وسداد الديون.");
-      }
-
-      if (shopping > 0) {
-        tips.push("حدّد سقفًا شهريًا للمطاعم والتسوق (مثلاً لا يتجاوز " +
-          formatMoney(shopping * 0.7) + " الشهر القادم).");
-      }
-
-      if (installments > salary * 0.3) {
-        tips.push("أقساطك تشكّل نسبة عالية من الراتب، اجعل أولوية الادخار هي التخلص من الديون بأسرع وقت.");
-      }
-
-      tips.push("استخدم هذه الحاسبة كل شهر، واحتفظ بالأرقام في ملف اكسل بسيط لمتابعة تحسّن وضعك المالي.");
-
-      tips.forEach(function (t) {
-        const li = document.createElement("li");
-        li.textContent = t;
-        tipsList.appendChild(li);
-      });
+  function saveData() {
+    inputIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) localStorage.setItem("budget_" + id, el.value);
     });
-  </script>
+  }
+
+  function loadData() {
+    inputIds.forEach(id => {
+      const el = document.getElementById(id);
+      const v = localStorage.getItem("budget_" + id);
+      if (el && v !== null) el.value = v;
+    });
+  }
+
+  // حفظ تلقائي عند التغيير (مفيد للجوال)
+  inputIds.forEach(id => {
+    const el = document.getElementById(id);
+    el && el.addEventListener("input", saveData);
+  });
+
+  loadData();
+
+  // --------- الوضع الداكن / الفاتح ----------
+  const themeToggle = document.getElementById("themeToggle");
+  const themeLabel  = document.getElementById("themeLabel");
+
+  function applyTheme(theme) {
+    if (theme === "dark") {
+      document.body.classList.add("dark");
+      themeLabel.textContent = "الوضع الفاتح";
+    } else {
+      document.body.classList.remove("dark");
+      themeLabel.textContent = "الوضع الداكن";
+    }
+    localStorage.setItem("budget_theme", theme);
+    updateChartsTheme();
+  }
+
+  const savedTheme = localStorage.getItem("budget_theme") || "light";
+  applyTheme(savedTheme);
+
+  themeToggle.addEventListener("click", () => {
+    const isDark = document.body.classList.contains("dark");
+    applyTheme(isDark ? "light" : "dark");
+  });
+
+  // --------- الحساب والرسوم ----------
+  let pieChart = null;
+  let barChart = null;
+
+  function calcValues() {
+    const g = id => Number(document.getElementById(id).value || 0);
+
+    const salary = g("salary");
+
+    const fixed = g("rent") + g("fixedOther");
+    const bills = g("electricity") + g("water") + g("mobile") + g("internet") + g("billsOther");
+    const debt  = g("installments") + g("creditCard");
+    const necessary = g("food") + g("kids") + g("necessaryOther");
+    const luxury    = g("restaurants") + g("subscriptions") + g("nonEssentialShopping") +
+                      g("groceries") + g("fuel") + g("luxuryOther");
+
+    const total = fixed + bills + debt + necessary + luxury;
+    const remaining = salary - total;
+    const saving = Math.max(0, remaining * 0.2);
+
+    return { salary,fixed,bills,debt,necessary,luxury,total,remaining,saving };
+  }
+
+  function formatMoney(num) {
+    return num.toLocaleString("ar-SA", { maximumFractionDigits: 0 }) + " ريال";
+  }
+
+  function calculate() {
+    const v = calcValues();
+    if (v.salary <= 0) {
+      alert("الرجاء إدخال الراتب الشهري أولاً.");
+      return;
+    }
+
+    const totalEl = document.getElementById("totalExpenses");
+    const remainingEl = document.getElementById("remaining");
+    const savingEl = document.getElementById("saving");
+    const expenseText = document.getElementById("expenseText");
+    const remainingText = document.getElementById("remainingText");
+    const savingText = document.getElementById("savingText");
+
+    totalEl.className = "value";
+    remainingEl.className = "value";
+    savingEl.className = "value";
+
+    totalEl.textContent = formatMoney(v.total);
+    remainingEl.textContent = formatMoney(v.remaining);
+    savingEl.textContent = formatMoney(v.saving);
+
+    const ratio = v.salary ? (v.total / v.salary) : 0;
+    expenseText.textContent = "نسبة المصاريف من الراتب: " + (ratio * 100).toFixed(1) + "%";
+
+    if (ratio <= 0.5) {
+      totalEl.classList.add("good");
+    } else if (ratio <= 0.7) {
+      totalEl.classList.add("warn");
+    } else {
+      totalEl.classList.add("bad");
+    }
+
+    if (v.remaining > 0) {
+      remainingEl.classList.add("good");
+      remainingText.textContent = "لديك مبلغ متبقٍ يمكن توجيهه للادخار أو سداد الديون.";
+    } else if (v.remaining === 0) {
+      remainingEl.classList.add("warn");
+      remainingText.textContent = "لا يتبقى شيء من الراتب، أي زيادة في المصاريف ستسبب عجزًا.";
+    } else {
+      remainingEl.classList.add("bad");
+      remainingText.textContent = "يوجد عجز شهري، تحتاج لتخفيض المصاريف أو زيادة الدخل.";
+    }
+
+    if (v.saving > 0) {
+      savingEl.classList.add("good");
+      savingText.textContent = "قاعدة مقترحة: ادخر ١٠٪ إلى ٢٠٪ من الراتب. هنا اقترحنا ٢٠٪ من المتبقي.";
+    } else {
+      savingEl.classList.add("bad");
+      savingText.textContent = "قلّل الكماليات والأقساط حتى يتوفر مبلغ يمكن ادخاره شهريًا.";
+    }
+
+    saveData();
+    renderCharts(v);
+  }
+
+  function renderCharts(v) {
+    const isDark = document.body.classList.contains("dark");
+    const axisColor = isDark ? "#e5e7eb" : "#111827";
+    const gridColor = isDark ? "#1f2937" : "#e5e7eb";
+    const legendColor = axisColor;
+
+    const pieData = [v.fixed, v.bills, v.debt, v.necessary, v.luxury];
+
+    if (pieChart) pieChart.destroy();
+    if (barChart) barChart.destroy();
+
+    const pieCtx = document.getElementById("chartPie").getContext("2d");
+    const barCtx = document.getElementById("chartBar").getContext("2d");
+
+    pieChart = new Chart(pieCtx, {
+      type: "doughnut",
+      data: {
+        labels: ["ثابتة","فواتير","ديون","لازمة","كماليات"],
+        datasets: [{
+          data: pieData,
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: { color: legendColor }
+          }
+        }
+      }
+    });
+
+    barChart = new Chart(barCtx, {
+      type: "bar",
+      data: {
+        labels: ["الراتب","المصاريف","المتبقي","الادخار"],
+        datasets: [{
+          data: [v.salary, v.total, v.remaining, v.saving],
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            ticks: { color: axisColor },
+            grid: { color: gridColor }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: { color: axisColor },
+            grid: { color: gridColor }
+          }
+        }
+      }
+    });
+  }
+
+  function updateChartsTheme() {
+    if (!pieChart || !barChart) return;
+    const isDark = document.body.classList.contains("dark");
+    const axisColor = isDark ? "#e5e7eb" : "#111827";
+    const gridColor = isDark ? "#1f2937" : "#e5e7eb";
+    const legendColor = axisColor;
+
+    pieChart.options.plugins.legend.labels.color = legendColor;
+    pieChart.update();
+
+    barChart.options.scales.x.ticks.color = axisColor;
+    barChart.options.scales.y.ticks.color = axisColor;
+    barChart.options.scales.x.grid.color = gridColor;
+    barChart.options.scales.y.grid.color = gridColor;
+    barChart.update();
+  }
+
+  document.getElementById("calcBtn").addEventListener("click", calculate);
+
+  // --------- تصدير إلى Excel ----------
+  function exportExcel() {
+    const v = calcValues();
+    const data = [
+      ["البند", "القيمة"],
+      ["الراتب", v.salary],
+      ["المصاريف الثابتة", v.fixed],
+      ["الفواتير", v.bills],
+      ["الأقساط والبطاقة", v.debt],
+      ["المصاريف اللازمة", v.necessary],
+      ["الكماليات", v.luxury],
+      ["إجمالي المصاريف", v.total],
+      ["المتبقي من الراتب", v.remaining],
+      ["الادخار المقترح", v.saving]
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "الميزانية");
+    XLSX.writeFile(wb, "ميزانية-عبدالرحمن.xlsx");
+  }
+
+  document.getElementById("exportBtn").addEventListener("click", exportExcel);
+</script>
 </body>
 </html>
